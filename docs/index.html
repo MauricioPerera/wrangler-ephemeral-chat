@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ephemeral Chat — chat que se autodestruye solo</title>
+<meta name="description" content="Chat en tiempo real que se despliega en segundos con wrangler --temporary sobre una cuenta temporal de Cloudflare, y se autodestruye solo en ~1 hora.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>">
+<style>
+  :root {
+    --bg: #0a0b12;
+    --bg2: #0f1120;
+    --text: #eef0ff;
+    --muted: #9aa0c0;
+    --primary: #7c8cff;
+    --primary2: #ff7ce0;
+    --accent: #4dffc4;
+    --card: rgba(255,255,255,0.045);
+    --border: rgba(255,255,255,0.09);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+  }
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    display: block;
+  }
+  .content { position: relative; z-index: 1; }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    background: rgba(10,11,18,0.55);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .brand { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+  .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+  nav a.navlink {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    margin-left: 22px;
+  }
+  nav a.navlink:hover { color: var(--text); }
+
+  .hero {
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 24px 60px;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .eyebrow .pulse {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+  h1.hero-title {
+    font-size: clamp(38px, 7vw, 76px);
+    line-height: 1.04;
+    margin: 0 0 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  h1.hero-title .grad {
+    background: linear-gradient(100deg, var(--primary), var(--primary2) 55%, var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-sub {
+    max-width: 620px;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.6;
+    margin: 0 0 36px;
+  }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14.5px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform .15s ease, opacity .15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary {
+    background: linear-gradient(100deg, var(--primary), var(--primary2));
+    color: #0a0b12;
+  }
+  .btn-ghost {
+    background: var(--card);
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  .countdown-chip {
+    margin-top: 44px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 10px 18px;
+    border-radius: 999px;
+  }
+
+  section { padding: 90px 0; }
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 52px; }
+  .section-tag { color: var(--accent); font-size: 12.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
+  .section-title { font-size: clamp(26px, 4vw, 38px); font-weight: 800; margin: 0 0 14px; letter-spacing: -0.01em; }
+  .section-sub { color: var(--muted); font-size: 15.5px; line-height: 1.65; }
+
+  .grid { display: grid; gap: 18px; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 820px) { .grid-3 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px;
+  }
+  .card .icon { font-size: 26px; margin-bottom: 14px; display: block; }
+  .card h3 { margin: 0 0 8px; font-size: 16.5px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  .steps { counter-reset: step; display: flex; flex-direction: column; gap: 0; max-width: 720px; margin: 0 auto; }
+  .step {
+    counter-increment: step;
+    display: flex;
+    gap: 20px;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+  }
+  .step:last-child { border-bottom: 1px solid var(--border); }
+  .step::before {
+    content: counter(step);
+    flex-shrink: 0;
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--primary2));
+    color: #0a0b12;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .step h4 { margin: 3px 0 6px; font-size: 15.5px; }
+  .step p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .step code {
+    display: block;
+    margin-top: 10px;
+    background: #05060c;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    color: var(--accent);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .usecases { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-size: 13.5px;
+    color: var(--text);
+  }
+
+  .cta-band {
+    text-align: center;
+    background: linear-gradient(180deg, transparent, rgba(124,140,255,0.06));
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  footer { padding: 50px 0 70px; text-align: center; color: var(--muted); font-size: 13px; }
+  footer a { color: var(--muted); }
+  footer .foot-links { display: flex; gap: 18px; justify-content: center; margin-bottom: 18px; flex-wrap: wrap; }
+  footer .foot-links a { text-decoration: none; }
+  footer .foot-links a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="content">
+  <nav>
+    <div class="wrap">
+      <div class="brand"><span class="dot"></span> Ephemeral Chat</div>
+      <div>
+        <a class="navlink" href="#why">Por qué</a>
+        <a class="navlink" href="#features">Funcionalidades</a>
+        <a class="navlink" href="#how">Cómo funciona</a>
+        <a class="navlink" href="https://github.com/MauricioPerera/wrangler-ephemeral-chat">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="eyebrow"><span class="pulse"></span> Corre sobre cuentas temporales de Cloudflare</div>
+    <h1 class="hero-title">Un chat que<br><span class="grad">se autodestruye solo.</span></h1>
+    <p class="hero-sub">
+      Un comando, cero login, cero cuenta que borrar después. <code>wrangler deploy --temporary</code>
+      levanta el chat en segundos sobre una cuenta de Cloudflare desechable que dura ~1 hora y
+      desaparece sola — Worker, mensajes y todo.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://deploy.workers.cloudflare.com/?url=https://github.com/MauricioPerera/wrangler-ephemeral-chat" target="_blank" rel="noopener">🚀 Deploy to Cloudflare</a>
+      <a class="btn btn-ghost" href="https://github.com/MauricioPerera/wrangler-ephemeral-chat" target="_blank" rel="noopener">Ver código en GitHub</a>
+    </div>
+    <div class="countdown-chip" id="hero-countdown">⏳ se autodestruye en 59:59</div>
+  </header>
+
+  <section id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag">Por qué existe</div>
+        <h2 class="section-title">No todo chat necesita vivir para siempre</h2>
+        <p class="section-sub">
+          A veces solo hace falta un lugar para coordinar algo puntual: una llamada, un evento, un grupo
+          de prueba. Crear cuenta, configurar, y después acordarte de borrarlo es fricción que no aporta nada.
+        </p>
+      </div>
+      <div class="grid grid-3">
+        <div class="card">
+          <span class="icon">⚡</span>
+          <h3>Cero fricción</h3>
+          <p>Sin crear cuenta, sin login, sin tarjeta. Un comando y tenés una URL pública funcionando.</p>
+        </div>
+        <div class="card">
+          <span class="icon">🧹</span>
+          <h3>Se limpia solo</h3>
+          <p>Nada que recordar borrar. Pasada la hora, Cloudflare elimina la cuenta temporal y todo lo que contiene.</p>
+        </div>
+        <div class="card">
+          <span class="icon">🔐</span>
+          <h3>Privado por diseño</h3>
+          <p>Modo cerrado con invitaciones de un solo uso si necesitás que entre solo gente específica.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag">Funcionalidades</div>
+        <h2 class="section-title">Lo justo para un chat de verdad</h2>
+        <p class="section-sub">Construido sobre un único Durable Object por sala: WebSockets en vivo + SQLite para el estado.</p>
+      </div>
+      <div class="grid grid-3">
+        <div class="card"><span class="icon">💬</span><h3>Tiempo real</h3><p>WebSockets vía la Hibernation API de Durable Objects — hasta miles de conexiones por sala.</p></div>
+        <div class="card"><span class="icon">🗂️</span><h3>Historial persistente</h3><p>Los últimos 50 mensajes se guardan en SQLite del propio Durable Object. Quien entra tarde los ve.</p></div>
+        <div class="card"><span class="icon">🎨</span><h3>Identidad por mensaje</h3><p>Nombre y color por usuario, burbujas propias vs. ajenas, todo escapado (sin XSS).</p></div>
+        <div class="card"><span class="icon">🔓</span><h3>Abierto o cerrado</h3><p>Cualquiera con el link, o solo invitados con links de un solo uso generados por el admin.</p></div>
+        <div class="card"><span class="icon">👑</span><h3>Rol admin</h3><p>El primero en conectar con <code>?admin=1</code> controla la sala y guarda un link para volver a entrar.</p></div>
+        <div class="card"><span class="icon">📱</span><h3>Mobile-first</h3><p>Pantalla completa en celular, input pegado abajo, sin barras raras de zoom.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag">Cómo funciona</div>
+        <h2 class="section-title">De cero a chat en menos de un minuto</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div>
+            <h4>Cloná el repo</h4>
+            <p>No hace falta tener cuenta de Cloudflare ni estar logueado.</p>
+            <code>git clone https://github.com/MauricioPerera/wrangler-ephemeral-chat.git
+cd wrangler-ephemeral-chat && npm install</code>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <h4>Desplegá con --temporary</h4>
+            <p>Wrangler crea una cuenta desechable, despliega el Worker y te da la URL pública.</p>
+            <code>npx wrangler deploy --temporary</code>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <h4>Compartí el link</h4>
+            <p>Mandale la URL del chat a quien quieras. El chat vive mientras viva la cuenta temporal (~1 hora).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <h4>¿Te gustó? Quedátelo</h4>
+            <p>Wrangler también te da una <em>claim URL</em>. Abrila y logueate antes de que venza la hora
+            y el Worker pasa a tu cuenta real, para siempre. Si no hacés nada, se borra solo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="wrap section-head" style="margin-bottom:32px;">
+      <div class="section-tag">Casos de uso</div>
+      <h2 class="section-title">¿Para qué sirve esto en la práctica?</h2>
+    </div>
+    <div class="wrap">
+      <div class="usecases">
+        <span class="pill">Coordinar un evento puntual</span>
+        <span class="pill">Sala de soporte temporal</span>
+        <span class="pill">Demo rápida para un cliente</span>
+        <span class="pill">Grupo de prueba de una hora</span>
+        <span class="pill">Watch party</span>
+        <span class="pill">Sala de juego improvisada</span>
+        <span class="pill">Aprender Durable Objects</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-links">
+        <a href="https://github.com/MauricioPerera/wrangler-ephemeral-chat" target="_blank" rel="noopener">Repositorio</a>
+        <a href="https://github.com/MauricioPerera/wrangler-ephemeral-chat/blob/master/AGENTS.md" target="_blank" rel="noopener">Guía para agentes</a>
+        <a href="https://developers.cloudflare.com/workers/platform/claim-deployments/" target="_blank" rel="noopener">Docs: cuentas temporales</a>
+        <a href="https://developers.cloudflare.com/durable-objects/" target="_blank" rel="noopener">Docs: Durable Objects</a>
+      </div>
+      No afiliado con Cloudflare. Hecho con <code>wrangler deploy --temporary</code>.
+    </div>
+  </footer>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+(function () {
+  var canvas = document.getElementById('bg-canvas');
+  var renderer, scene, camera, particles, animId;
+  var mouseX = 0, mouseY = 0;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function init() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = 14;
+
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    var COUNT = window.innerWidth < 700 ? 260 : 620;
+    var positions = new Float32Array(COUNT * 3);
+    var speeds = new Float32Array(COUNT);
+    var colorChoices = [
+      new THREE.Color(0x7c8cff),
+      new THREE.Color(0xff7ce0),
+      new THREE.Color(0x4dffc4),
+    ];
+    var colors = new Float32Array(COUNT * 3);
+
+    for (var i = 0; i < COUNT; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 34;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+      speeds[i] = 0.15 + Math.random() * 0.35;
+      var c = colorChoices[i % colorChoices.length];
+      colors[i * 3] = c.r; colors[i * 3 + 1] = c.g; colors[i * 3 + 2] = c.b;
+    }
+
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    var mat = new THREE.PointsMaterial({
+      size: 0.09,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    particles = new THREE.Points(geo, mat);
+    particles.userData.speeds = speeds;
+    scene.add(particles);
+
+    window.addEventListener('resize', onResize);
+    window.addEventListener('mousemove', onMouseMove);
+    animate();
+  }
+
+  function onResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  function onMouseMove(e) {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  }
+
+  var clock = new THREE.Clock();
+
+  function animate() {
+    animId = requestAnimationFrame(animate);
+    var t = clock.getElapsedTime();
+    var pos = particles.geometry.attributes.position;
+    var speeds = particles.userData.speeds;
+
+    for (var i = 0; i < pos.count; i++) {
+      var y = pos.getY(i);
+      y += speeds[i] * 0.01;
+      if (y > 10) y = -10;
+      pos.setY(i, y);
+    }
+    pos.needsUpdate = true;
+
+    particles.rotation.y = t * 0.02;
+    camera.position.x += (mouseX * 1.5 - camera.position.x) * 0.02;
+    camera.position.y += (-mouseY * 1.0 - camera.position.y) * 0.02;
+    camera.lookAt(scene.position);
+
+    renderer.render(scene, camera);
+  }
+
+  if (!reduceMotion && window.WebGLRenderingContext) {
+    try { init(); } catch (e) { canvas.style.display = 'none'; }
+  } else {
+    canvas.style.display = 'none';
+  }
+})();
+
+// Countdown decorativo del hero (no representa un deploy real, solo ilustra la mecánica de 60 min)
+(function () {
+  var el = document.getElementById('hero-countdown');
+  var total = 60 * 60;
+  var remaining = total;
+  setInterval(function () {
+    remaining = remaining > 0 ? remaining - 1 : total;
+    var m = Math.floor(remaining / 60);
+    var s = remaining % 60;
+    el.textContent = '⏳ se autodestruye en ' + m + ':' + String(s).padStart(2, '0');
+  }, 1000);
+})();
+</script>
+
+</body>
+</html>
