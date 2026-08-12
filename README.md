@@ -1,5 +1,7 @@
 # 💬 Ephemeral Chat
 
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/MauricioPerera/wrangler-ephemeral-chat)
+
 Un chat en tiempo real que se despliega en segundos sobre una **cuenta temporal de Cloudflare**, sin necesidad de login, y se **autodestruye solo** cuando esa cuenta expira (~1 hora).
 
 Construido sobre [Durable Objects](https://developers.cloudflare.com/durable-objects/) (WebSockets + SQLite) y el flag [`wrangler deploy --temporary`](https://developers.cloudflare.com/workers/platform/claim-deployments/).
@@ -30,6 +32,8 @@ La salida te da la URL del chat y una **claim URL**. Compartí la URL del chat c
 ### Deploy permanente (opcional)
 
 Si preferís que no expire, hacé `wrangler login` y corré `npx wrangler deploy` en vez de `--temporary`.
+
+También podés usar el botón **Deploy to Cloudflare** de arriba: clona el repo a tu cuenta de GitHub/GitLab, provisiona los recursos necesarios (el Durable Object) y lo despliega en tu cuenta de Cloudflare, con CI/CD (Workers Builds) para futuros pushes. A diferencia de `--temporary`, este camino requiere loguearte en Cloudflare y el Worker **no expira** — es la vía para quedarte con el chat de forma permanente sin pasar por la CLI. Más info: [Deploy to Cloudflare buttons](https://developers.cloudflare.com/workers/platform/deploy-buttons/).
 
 ## Funcionalidades
 
