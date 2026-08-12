@@ -10,7 +10,7 @@ Un chat en tiempo real que se despliega en segundos sobre una **cuenta temporal 
 
 Construido sobre [Durable Objects](https://developers.cloudflare.com/durable-objects/) (WebSockets + SQLite) y el flag [`wrangler deploy --temporary`](https://developers.cloudflare.com/workers/platform/claim-deployments/).
 
-Hermano de [wrangler-ephemeral-whiteboard](https://github.com/MauricioPerera/wrangler-ephemeral-whiteboard) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-whiteboard/)) — mismo patrón, pero para dibujar en vez de chatear — y de [wrangler-ephemeral-airdrop](https://github.com/MauricioPerera/wrangler-ephemeral-airdrop) — para compartir un archivo por QR/link sin que el receptor esté conectado antes.
+Hermano de [wrangler-ephemeral-whiteboard](https://github.com/MauricioPerera/wrangler-ephemeral-whiteboard) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-whiteboard/)) — mismo patrón, pero para dibujar en vez de chatear — y de [wrangler-ephemeral-airdrop](https://github.com/MauricioPerera/wrangler-ephemeral-airdrop) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-airdrop/)) — para compartir un archivo por QR/link sin que el receptor esté conectado antes.
 
 ## Cómo funciona
 
