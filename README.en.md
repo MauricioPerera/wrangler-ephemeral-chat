@@ -10,6 +10,8 @@ A real-time chat that deploys in seconds on a **Cloudflare temporary account**, 
 
 Built on [Durable Objects](https://developers.cloudflare.com/durable-objects/) (WebSockets + SQLite) and the [`wrangler deploy --temporary`](https://developers.cloudflare.com/workers/platform/claim-deployments/) flag.
 
+Sibling of [wrangler-ephemeral-whiteboard](https://github.com/MauricioPerera/wrangler-ephemeral-whiteboard) — same pattern, but for drawing instead of chatting.
+
 ## How it works
 
 - `wrangler deploy --temporary` creates a temporary Cloudflare account (no login), deploys the Worker, and gives you a public URL on `workers.dev`.
