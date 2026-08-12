@@ -68,3 +68,7 @@ Todo el frontend vive embebido como HTML/CSS/JS dentro del propio Worker — no 
 - Los tokens de la cuenta temporal no tienen todos los permisos de una cuenta real.
 
 Más info: [Claim deployments · Cloudflare Workers docs](https://developers.cloudflare.com/workers/platform/claim-deployments/)
+
+## ¿Sos un agente de IA?
+
+Ver [AGENTS.md](./AGENTS.md) para instrucciones de despliegue autónomo con `wrangler --temporary`: requisitos, comandos exactos, gotchas reales (credenciales cacheadas, subcomandos no soportados, verificación post-deploy) y qué reportarle al usuario.
