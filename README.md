@@ -2,6 +2,8 @@
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/MauricioPerera/wrangler-ephemeral-chat)
 
+🌐 **[Landing page](https://mauricioperera.github.io/wrangler-ephemeral-chat/)** — presentación visual del proyecto, disponible en español / English / português.
+
 Un chat en tiempo real que se despliega en segundos sobre una **cuenta temporal de Cloudflare**, sin necesidad de login, y se **autodestruye solo** cuando esa cuenta expira (~1 hora).
 
 Construido sobre [Durable Objects](https://developers.cloudflare.com/durable-objects/) (WebSockets + SQLite) y el flag [`wrangler deploy --temporary`](https://developers.cloudflare.com/workers/platform/claim-deployments/).

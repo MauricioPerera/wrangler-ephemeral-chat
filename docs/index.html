@@ -60,6 +60,22 @@
     margin-left: 22px;
   }
   nav a.navlink:hover { color: var(--text); }
+  .lang-switch { display: inline-flex; gap: 4px; margin-left: 22px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 3px; vertical-align: middle; }
+  .lang-btn {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .lang-btn.active { background: linear-gradient(100deg, var(--primary), var(--primary2)); color: #0a0b12; }
+  @media (max-width: 700px) {
+    nav .navlinks-desktop { display: none; }
+  }
 
   .hero {
     min-height: 88vh;
@@ -234,25 +250,32 @@
     <div class="wrap">
       <div class="brand"><span class="dot"></span> Ephemeral Chat</div>
       <div>
-        <a class="navlink" href="#why">Por qué</a>
-        <a class="navlink" href="#features">Funcionalidades</a>
-        <a class="navlink" href="#how">Cómo funciona</a>
-        <a class="navlink" href="https://github.com/MauricioPerera/wrangler-ephemeral-chat">GitHub</a>
+        <span class="navlinks-desktop">
+          <a class="navlink" href="#why" id="nav-why">Por qué</a>
+          <a class="navlink" href="#features" id="nav-features">Funcionalidades</a>
+          <a class="navlink" href="#how" id="nav-how">Cómo funciona</a>
+          <a class="navlink" href="https://github.com/MauricioPerera/wrangler-ephemeral-chat">GitHub</a>
+        </span>
+        <span class="lang-switch" id="lang-switch">
+          <button class="lang-btn" data-lang="es">ES</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="pt">PT</button>
+        </span>
       </div>
     </div>
   </nav>
 
   <header class="hero">
-    <div class="eyebrow"><span class="pulse"></span> Corre sobre cuentas temporales de Cloudflare</div>
-    <h1 class="hero-title">Un chat que<br><span class="grad">se autodestruye solo.</span></h1>
-    <p class="hero-sub">
+    <div class="eyebrow"><span class="pulse"></span> <span id="hero-eyebrow">Corre sobre cuentas temporales de Cloudflare</span></div>
+    <h1 class="hero-title" id="hero-title">Un chat que<br><span class="grad">se autodestruye solo.</span></h1>
+    <p class="hero-sub" id="hero-sub">
       Un comando, cero login, cero cuenta que borrar después. <code>wrangler deploy --temporary</code>
       levanta el chat en segundos sobre una cuenta de Cloudflare desechable que dura ~1 hora y
       desaparece sola — Worker, mensajes y todo.
     </p>
     <div class="cta-row">
       <a class="btn btn-primary" href="https://deploy.workers.cloudflare.com/?url=https://github.com/MauricioPerera/wrangler-ephemeral-chat" target="_blank" rel="noopener">🚀 Deploy to Cloudflare</a>
-      <a class="btn btn-ghost" href="https://github.com/MauricioPerera/wrangler-ephemeral-chat" target="_blank" rel="noopener">Ver código en GitHub</a>
+      <a class="btn btn-ghost" href="https://github.com/MauricioPerera/wrangler-ephemeral-chat" target="_blank" rel="noopener" id="hero-cta-ghost">Ver código en GitHub</a>
     </div>
     <div class="countdown-chip" id="hero-countdown">⏳ se autodestruye en 59:59</div>
   </header>
@@ -260,9 +283,9 @@
   <section id="why">
     <div class="wrap">
       <div class="section-head">
-        <div class="section-tag">Por qué existe</div>
-        <h2 class="section-title">No todo chat necesita vivir para siempre</h2>
-        <p class="section-sub">
+        <div class="section-tag" id="why-tag">Por qué existe</div>
+        <h2 class="section-title" id="why-title">No todo chat necesita vivir para siempre</h2>
+        <p class="section-sub" id="why-sub">
           A veces solo hace falta un lugar para coordinar algo puntual: una llamada, un evento, un grupo
           de prueba. Crear cuenta, configurar, y después acordarte de borrarlo es fricción que no aporta nada.
         </p>
@@ -270,18 +293,18 @@
       <div class="grid grid-3">
         <div class="card">
           <span class="icon">⚡</span>
-          <h3>Cero fricción</h3>
-          <p>Sin crear cuenta, sin login, sin tarjeta. Un comando y tenés una URL pública funcionando.</p>
+          <h3 id="why-c1-h">Cero fricción</h3>
+          <p id="why-c1-p">Sin crear cuenta, sin login, sin tarjeta. Un comando y tenés una URL pública funcionando.</p>
         </div>
         <div class="card">
           <span class="icon">🧹</span>
-          <h3>Se limpia solo</h3>
-          <p>Nada que recordar borrar. Pasada la hora, Cloudflare elimina la cuenta temporal y todo lo que contiene.</p>
+          <h3 id="why-c2-h">Se limpia solo</h3>
+          <p id="why-c2-p">Nada que recordar borrar. Pasada la hora, Cloudflare elimina la cuenta temporal y todo lo que contiene.</p>
         </div>
         <div class="card">
           <span class="icon">🔐</span>
-          <h3>Privado por diseño</h3>
-          <p>Modo cerrado con invitaciones de un solo uso si necesitás que entre solo gente específica.</p>
+          <h3 id="why-c3-h">Privado por diseño</h3>
+          <p id="why-c3-p">Modo cerrado con invitaciones de un solo uso si necesitás que entre solo gente específica.</p>
         </div>
       </div>
     </div>
@@ -290,17 +313,17 @@
   <section id="features">
     <div class="wrap">
       <div class="section-head">
-        <div class="section-tag">Funcionalidades</div>
-        <h2 class="section-title">Lo justo para un chat de verdad</h2>
-        <p class="section-sub">Construido sobre un único Durable Object por sala: WebSockets en vivo + SQLite para el estado.</p>
+        <div class="section-tag" id="feat-tag">Funcionalidades</div>
+        <h2 class="section-title" id="feat-title">Lo justo para un chat de verdad</h2>
+        <p class="section-sub" id="feat-sub">Construido sobre un único Durable Object por sala: WebSockets en vivo + SQLite para el estado.</p>
       </div>
       <div class="grid grid-3">
-        <div class="card"><span class="icon">💬</span><h3>Tiempo real</h3><p>WebSockets vía la Hibernation API de Durable Objects — hasta miles de conexiones por sala.</p></div>
-        <div class="card"><span class="icon">🗂️</span><h3>Historial persistente</h3><p>Los últimos 50 mensajes se guardan en SQLite del propio Durable Object. Quien entra tarde los ve.</p></div>
-        <div class="card"><span class="icon">🎨</span><h3>Identidad por mensaje</h3><p>Nombre y color por usuario, burbujas propias vs. ajenas, todo escapado (sin XSS).</p></div>
-        <div class="card"><span class="icon">🔓</span><h3>Abierto o cerrado</h3><p>Cualquiera con el link, o solo invitados con links de un solo uso generados por el admin.</p></div>
-        <div class="card"><span class="icon">👑</span><h3>Rol admin</h3><p>El primero en conectar con <code>?admin=1</code> controla la sala y guarda un link para volver a entrar.</p></div>
-        <div class="card"><span class="icon">📱</span><h3>Mobile-first</h3><p>Pantalla completa en celular, input pegado abajo, sin barras raras de zoom.</p></div>
+        <div class="card"><span class="icon">💬</span><h3 id="feat-1-h">Tiempo real</h3><p id="feat-1-p">WebSockets vía la Hibernation API de Durable Objects — hasta miles de conexiones por sala.</p></div>
+        <div class="card"><span class="icon">🗂️</span><h3 id="feat-2-h">Historial persistente</h3><p id="feat-2-p">Los últimos 50 mensajes se guardan en SQLite del propio Durable Object. Quien entra tarde los ve.</p></div>
+        <div class="card"><span class="icon">🎨</span><h3 id="feat-3-h">Identidad por mensaje</h3><p id="feat-3-p">Nombre y color por usuario, burbujas propias vs. ajenas, todo escapado (sin XSS).</p></div>
+        <div class="card"><span class="icon">🔓</span><h3 id="feat-4-h">Abierto o cerrado</h3><p id="feat-4-p">Cualquiera con el link, o solo invitados con links de un solo uso generados por el admin.</p></div>
+        <div class="card"><span class="icon">👑</span><h3 id="feat-5-h">Rol admin</h3><p id="feat-5-p">El primero en conectar con <code>?admin=1</code> controla la sala y guarda un link para volver a entrar.</p></div>
+        <div class="card"><span class="icon">📱</span><h3 id="feat-6-h">Mobile-first</h3><p id="feat-6-p">Pantalla completa en celular, input pegado abajo, sin barras raras de zoom.</p></div>
       </div>
     </div>
   </section>
@@ -308,35 +331,35 @@
   <section id="how">
     <div class="wrap">
       <div class="section-head">
-        <div class="section-tag">Cómo funciona</div>
-        <h2 class="section-title">De cero a chat en menos de un minuto</h2>
+        <div class="section-tag" id="how-tag">Cómo funciona</div>
+        <h2 class="section-title" id="how-title">De cero a chat en menos de un minuto</h2>
       </div>
       <div class="steps">
         <div class="step">
           <div>
-            <h4>Cloná el repo</h4>
-            <p>No hace falta tener cuenta de Cloudflare ni estar logueado.</p>
+            <h4 id="how-1-h">Cloná el repo</h4>
+            <p id="how-1-p">No hace falta tener cuenta de Cloudflare ni estar logueado.</p>
             <code>git clone https://github.com/MauricioPerera/wrangler-ephemeral-chat.git
 cd wrangler-ephemeral-chat && npm install</code>
           </div>
         </div>
         <div class="step">
           <div>
-            <h4>Desplegá con --temporary</h4>
-            <p>Wrangler crea una cuenta desechable, despliega el Worker y te da la URL pública.</p>
+            <h4 id="how-2-h">Desplegá con --temporary</h4>
+            <p id="how-2-p">Wrangler crea una cuenta desechable, despliega el Worker y te da la URL pública.</p>
             <code>npx wrangler deploy --temporary</code>
           </div>
         </div>
         <div class="step">
           <div>
-            <h4>Compartí el link</h4>
-            <p>Mandale la URL del chat a quien quieras. El chat vive mientras viva la cuenta temporal (~1 hora).</p>
+            <h4 id="how-3-h">Compartí el link</h4>
+            <p id="how-3-p">Mandale la URL del chat a quien quieras. El chat vive mientras viva la cuenta temporal (~1 hora).</p>
           </div>
         </div>
         <div class="step">
           <div>
-            <h4>¿Te gustó? Quedátelo</h4>
-            <p>Wrangler también te da una <em>claim URL</em>. Abrila y logueate antes de que venza la hora
+            <h4 id="how-4-h">¿Te gustó? Quedátelo</h4>
+            <p id="how-4-p">Wrangler también te da una <em>claim URL</em>. Abrila y logueate antes de que venza la hora
             y el Worker pasa a tu cuenta real, para siempre. Si no hacés nada, se borra solo.</p>
           </div>
         </div>
@@ -346,18 +369,18 @@ cd wrangler-ephemeral-chat && npm install</code>
 
   <section class="cta-band">
     <div class="wrap section-head" style="margin-bottom:32px;">
-      <div class="section-tag">Casos de uso</div>
-      <h2 class="section-title">¿Para qué sirve esto en la práctica?</h2>
+      <div class="section-tag" id="uc-tag">Casos de uso</div>
+      <h2 class="section-title" id="uc-title">¿Para qué sirve esto en la práctica?</h2>
     </div>
     <div class="wrap">
       <div class="usecases">
-        <span class="pill">Coordinar un evento puntual</span>
-        <span class="pill">Sala de soporte temporal</span>
-        <span class="pill">Demo rápida para un cliente</span>
-        <span class="pill">Grupo de prueba de una hora</span>
-        <span class="pill">Watch party</span>
-        <span class="pill">Sala de juego improvisada</span>
-        <span class="pill">Aprender Durable Objects</span>
+        <span class="pill" id="uc-1">Coordinar un evento puntual</span>
+        <span class="pill" id="uc-2">Sala de soporte temporal</span>
+        <span class="pill" id="uc-3">Demo rápida para un cliente</span>
+        <span class="pill" id="uc-4">Grupo de prueba de una hora</span>
+        <span class="pill" id="uc-5">Watch party</span>
+        <span class="pill" id="uc-6">Sala de juego improvisada</span>
+        <span class="pill" id="uc-7">Aprender Durable Objects</span>
       </div>
     </div>
   </section>
@@ -365,12 +388,12 @@ cd wrangler-ephemeral-chat && npm install</code>
   <footer>
     <div class="wrap">
       <div class="foot-links">
-        <a href="https://github.com/MauricioPerera/wrangler-ephemeral-chat" target="_blank" rel="noopener">Repositorio</a>
-        <a href="https://github.com/MauricioPerera/wrangler-ephemeral-chat/blob/master/AGENTS.md" target="_blank" rel="noopener">Guía para agentes</a>
-        <a href="https://developers.cloudflare.com/workers/platform/claim-deployments/" target="_blank" rel="noopener">Docs: cuentas temporales</a>
-        <a href="https://developers.cloudflare.com/durable-objects/" target="_blank" rel="noopener">Docs: Durable Objects</a>
+        <a href="https://github.com/MauricioPerera/wrangler-ephemeral-chat" target="_blank" rel="noopener" id="foot-1">Repositorio</a>
+        <a href="https://github.com/MauricioPerera/wrangler-ephemeral-chat/blob/master/AGENTS.md" target="_blank" rel="noopener" id="foot-2">Guía para agentes</a>
+        <a href="https://developers.cloudflare.com/workers/platform/claim-deployments/" target="_blank" rel="noopener" id="foot-3">Docs: cuentas temporales</a>
+        <a href="https://developers.cloudflare.com/durable-objects/" target="_blank" rel="noopener" id="foot-4">Docs: Durable Objects</a>
       </div>
-      No afiliado con Cloudflare. Hecho con <code>wrangler deploy --temporary</code>.
+      <span id="foot-note">No afiliado con Cloudflare. Hecho con <code>wrangler deploy --temporary</code>.</span>
     </div>
   </footer>
 </div>
@@ -479,6 +502,7 @@ import * as THREE from 'three';
 })();
 
 // Countdown decorativo del hero (no representa un deploy real, solo ilustra la mecánica de 60 min)
+window.__countdownPrefix = '⏳ se autodestruye en ';
 (function () {
   var el = document.getElementById('hero-countdown');
   var total = 60 * 60;
@@ -487,8 +511,152 @@ import * as THREE from 'three';
     remaining = remaining > 0 ? remaining - 1 : total;
     var m = Math.floor(remaining / 60);
     var s = remaining % 60;
-    el.textContent = '⏳ se autodestruye en ' + m + ':' + String(s).padStart(2, '0');
+    el.textContent = window.__countdownPrefix + m + ':' + String(s).padStart(2, '0');
   }, 1000);
+})();
+</script>
+
+<script>
+var I18N = {
+  es: {
+    'nav-why': 'Por qué', 'nav-features': 'Funcionalidades', 'nav-how': 'Cómo funciona',
+    'hero-eyebrow': 'Corre sobre cuentas temporales de Cloudflare',
+    'hero-title': 'Un chat que<br><span class="grad">se autodestruye solo.</span>',
+    'hero-sub': 'Un comando, cero login, cero cuenta que borrar después. <code>wrangler deploy --temporary</code> levanta el chat en segundos sobre una cuenta de Cloudflare desechable que dura ~1 hora y desaparece sola — Worker, mensajes y todo.',
+    'hero-cta-ghost': 'Ver código en GitHub',
+    'countdown-prefix': '⏳ se autodestruye en ',
+    'why-tag': 'Por qué existe',
+    'why-title': 'No todo chat necesita vivir para siempre',
+    'why-sub': 'A veces solo hace falta un lugar para coordinar algo puntual: una llamada, un evento, un grupo de prueba. Crear cuenta, configurar, y después acordarte de borrarlo es fricción que no aporta nada.',
+    'why-c1-h': 'Cero fricción', 'why-c1-p': 'Sin crear cuenta, sin login, sin tarjeta. Un comando y tenés una URL pública funcionando.',
+    'why-c2-h': 'Se limpia solo', 'why-c2-p': 'Nada que recordar borrar. Pasada la hora, Cloudflare elimina la cuenta temporal y todo lo que contiene.',
+    'why-c3-h': 'Privado por diseño', 'why-c3-p': 'Modo cerrado con invitaciones de un solo uso si necesitás que entre solo gente específica.',
+    'feat-tag': 'Funcionalidades',
+    'feat-title': 'Lo justo para un chat de verdad',
+    'feat-sub': 'Construido sobre un único Durable Object por sala: WebSockets en vivo + SQLite para el estado.',
+    'feat-1-h': 'Tiempo real', 'feat-1-p': 'WebSockets vía la Hibernation API de Durable Objects — hasta miles de conexiones por sala.',
+    'feat-2-h': 'Historial persistente', 'feat-2-p': 'Los últimos 50 mensajes se guardan en SQLite del propio Durable Object. Quien entra tarde los ve.',
+    'feat-3-h': 'Identidad por mensaje', 'feat-3-p': 'Nombre y color por usuario, burbujas propias vs. ajenas, todo escapado (sin XSS).',
+    'feat-4-h': 'Abierto o cerrado', 'feat-4-p': 'Cualquiera con el link, o solo invitados con links de un solo uso generados por el admin.',
+    'feat-5-h': 'Rol admin', 'feat-5-p': 'El primero en conectar con <code>?admin=1</code> controla la sala y guarda un link para volver a entrar.',
+    'feat-6-h': 'Mobile-first', 'feat-6-p': 'Pantalla completa en celular, input pegado abajo, sin barras raras de zoom.',
+    'how-tag': 'Cómo funciona',
+    'how-title': 'De cero a chat en menos de un minuto',
+    'how-1-h': 'Cloná el repo', 'how-1-p': 'No hace falta tener cuenta de Cloudflare ni estar logueado.',
+    'how-2-h': 'Desplegá con --temporary', 'how-2-p': 'Wrangler crea una cuenta desechable, despliega el Worker y te da la URL pública.',
+    'how-3-h': 'Compartí el link', 'how-3-p': 'Mandale la URL del chat a quien quieras. El chat vive mientras viva la cuenta temporal (~1 hora).',
+    'how-4-h': '¿Te gustó? Quedátelo', 'how-4-p': 'Wrangler también te da una <em>claim URL</em>. Abrila y logueate antes de que venza la hora y el Worker pasa a tu cuenta real, para siempre. Si no hacés nada, se borra solo.',
+    'uc-tag': 'Casos de uso',
+    'uc-title': '¿Para qué sirve esto en la práctica?',
+    'uc-1': 'Coordinar un evento puntual', 'uc-2': 'Sala de soporte temporal', 'uc-3': 'Demo rápida para un cliente',
+    'uc-4': 'Grupo de prueba de una hora', 'uc-5': 'Watch party', 'uc-6': 'Sala de juego improvisada', 'uc-7': 'Aprender Durable Objects',
+    'foot-1': 'Repositorio', 'foot-2': 'Guía para agentes', 'foot-3': 'Docs: cuentas temporales', 'foot-4': 'Docs: Durable Objects',
+    'foot-note': 'No afiliado con Cloudflare. Hecho con <code>wrangler deploy --temporary</code>.',
+  },
+  en: {
+    'nav-why': 'Why', 'nav-features': 'Features', 'nav-how': 'How it works',
+    'hero-eyebrow': 'Runs on Cloudflare temporary accounts',
+    'hero-title': 'A chat that<br><span class="grad">self-destructs.</span>',
+    'hero-sub': 'One command, zero login, zero account to clean up afterward. <code>wrangler deploy --temporary</code> spins up the chat in seconds on a disposable Cloudflare account that lasts ~1 hour and disappears on its own — Worker, messages, everything.',
+    'hero-cta-ghost': 'View code on GitHub',
+    'countdown-prefix': '⏳ self-destructs in ',
+    'why-tag': 'Why it exists',
+    'why-title': 'Not every chat needs to live forever',
+    'why-sub': 'Sometimes you just need a place to coordinate something one-off: a call, an event, a test group. Creating an account, setting it up, and remembering to delete it afterward is friction that adds nothing.',
+    'why-c1-h': 'Zero friction', 'why-c1-p': 'No account, no login, no card. One command and you have a working public URL.',
+    'why-c2-h': 'Cleans up on its own', 'why-c2-p': 'Nothing to remember to delete. After the hour, Cloudflare removes the temporary account and everything in it.',
+    'why-c3-h': 'Private by design', 'why-c3-p': 'Closed mode with single-use invites if you need only specific people to join.',
+    'feat-tag': 'Features',
+    'feat-title': 'Just enough for a real chat',
+    'feat-sub': 'Built on a single Durable Object per room: live WebSockets + SQLite for state.',
+    'feat-1-h': 'Real-time', 'feat-1-p': 'WebSockets via the Durable Objects Hibernation API — up to thousands of connections per room.',
+    'feat-2-h': 'Persistent history', 'feat-2-p': 'The last 50 messages are stored in the Durable Object\'s own SQLite. Late joiners see them.',
+    'feat-3-h': 'Per-message identity', 'feat-3-p': 'Name and color per user, own vs. others\' bubbles, everything escaped (no XSS).',
+    'feat-4-h': 'Open or closed', 'feat-4-p': 'Anyone with the link, or only invitees with single-use links generated by the admin.',
+    'feat-5-h': 'Admin role', 'feat-5-p': 'Whoever connects first with <code>?admin=1</code> controls the room and keeps a link to come back as admin.',
+    'feat-6-h': 'Mobile-first', 'feat-6-p': 'Full-screen on phones, input pinned to the bottom, no weird zoom bars.',
+    'how-tag': 'How it works',
+    'how-title': 'From zero to chat in under a minute',
+    'how-1-h': 'Clone the repo', 'how-1-p': 'No Cloudflare account or login needed.',
+    'how-2-h': 'Deploy with --temporary', 'how-2-p': 'Wrangler creates a disposable account, deploys the Worker, and gives you the public URL.',
+    'how-3-h': 'Share the link', 'how-3-p': 'Send the chat URL to whoever you want. The chat lives as long as the temporary account does (~1 hour).',
+    'how-4-h': 'Like it? Keep it', 'how-4-p': 'Wrangler also gives you a <em>claim URL</em>. Open it and log in before the hour is up and the Worker moves to your real account, permanently. Do nothing, and it deletes itself.',
+    'uc-tag': 'Use cases',
+    'uc-title': 'What is this actually good for?',
+    'uc-1': 'Coordinate a one-off event', 'uc-2': 'Temporary support room', 'uc-3': 'Quick demo for a client',
+    'uc-4': 'One-hour test group', 'uc-5': 'Watch party', 'uc-6': 'Improvised game room', 'uc-7': 'Learn Durable Objects',
+    'foot-1': 'Repository', 'foot-2': 'Agent guide', 'foot-3': 'Docs: temporary accounts', 'foot-4': 'Docs: Durable Objects',
+    'foot-note': 'Not affiliated with Cloudflare. Built with <code>wrangler deploy --temporary</code>.',
+  },
+  pt: {
+    'nav-why': 'Por quê', 'nav-features': 'Funcionalidades', 'nav-how': 'Como funciona',
+    'hero-eyebrow': 'Roda sobre contas temporárias da Cloudflare',
+    'hero-title': 'Um chat que<br><span class="grad">se autodestrói sozinho.</span>',
+    'hero-sub': 'Um comando, zero login, zero conta para apagar depois. <code>wrangler deploy --temporary</code> sobe o chat em segundos numa conta descartável da Cloudflare que dura ~1 hora e desaparece sozinha — Worker, mensagens, tudo.',
+    'hero-cta-ghost': 'Ver código no GitHub',
+    'countdown-prefix': '⏳ se autodestrói em ',
+    'why-tag': 'Por que existe',
+    'why-title': 'Nem todo chat precisa viver para sempre',
+    'why-sub': 'Às vezes só falta um lugar para combinar algo pontual: uma ligação, um evento, um grupo de teste. Criar conta, configurar e depois lembrar de apagar é fricção que não agrega nada.',
+    'why-c1-h': 'Zero fricção', 'why-c1-p': 'Sem criar conta, sem login, sem cartão. Um comando e você tem uma URL pública funcionando.',
+    'why-c2-h': 'Se limpa sozinho', 'why-c2-p': 'Nada para lembrar de apagar. Passada a hora, a Cloudflare remove a conta temporária e tudo que ela contém.',
+    'why-c3-h': 'Privado por design', 'why-c3-p': 'Modo fechado com convites de uso único se você precisar que só entre gente específica.',
+    'feat-tag': 'Funcionalidades',
+    'feat-title': 'O suficiente para um chat de verdade',
+    'feat-sub': 'Construído sobre um único Durable Object por sala: WebSockets ao vivo + SQLite para o estado.',
+    'feat-1-h': 'Tempo real', 'feat-1-p': 'WebSockets via a Hibernation API dos Durable Objects — até milhares de conexões por sala.',
+    'feat-2-h': 'Histórico persistente', 'feat-2-p': 'As últimas 50 mensagens ficam salvas no SQLite do próprio Durable Object. Quem entra depois as vê.',
+    'feat-3-h': 'Identidade por mensagem', 'feat-3-p': 'Nome e cor por usuário, balões próprios vs. alheios, tudo escapado (sem XSS).',
+    'feat-4-h': 'Aberto ou fechado', 'feat-4-p': 'Qualquer um com o link, ou só convidados com links de uso único gerados pelo admin.',
+    'feat-5-h': 'Papel de admin', 'feat-5-p': 'Quem conecta primeiro com <code>?admin=1</code> controla a sala e guarda um link para voltar como admin.',
+    'feat-6-h': 'Mobile-first', 'feat-6-p': 'Tela cheia no celular, campo de mensagem fixo embaixo, sem barras estranhas de zoom.',
+    'how-tag': 'Como funciona',
+    'how-title': 'Do zero ao chat em menos de um minuto',
+    'how-1-h': 'Clone o repositório', 'how-1-p': 'Não precisa de conta da Cloudflare nem estar logado.',
+    'how-2-h': 'Implante com --temporary', 'how-2-p': 'O Wrangler cria uma conta descartável, implanta o Worker e te dá a URL pública.',
+    'how-3-h': 'Compartilhe o link', 'how-3-p': 'Mande a URL do chat para quem você quiser. O chat vive enquanto a conta temporária existir (~1 hora).',
+    'how-4-h': 'Gostou? Fique com ele', 'how-4-p': 'O Wrangler também te dá uma <em>claim URL</em>. Abra e faça login antes da hora acabar e o Worker passa para sua conta real, para sempre. Se não fizer nada, ele se apaga sozinho.',
+    'uc-tag': 'Casos de uso',
+    'uc-title': 'Para que isso serve na prática?',
+    'uc-1': 'Combinar um evento pontual', 'uc-2': 'Sala de suporte temporária', 'uc-3': 'Demo rápida para um cliente',
+    'uc-4': 'Grupo de teste de uma hora', 'uc-5': 'Watch party', 'uc-6': 'Sala de jogo improvisada', 'uc-7': 'Aprender Durable Objects',
+    'foot-1': 'Repositório', 'foot-2': 'Guia para agentes', 'foot-3': 'Docs: contas temporárias', 'foot-4': 'Docs: Durable Objects',
+    'foot-note': 'Não afiliado à Cloudflare. Feito com <code>wrangler deploy --temporary</code>.',
+  },
+};
+
+(function () {
+  function applyLang(lang) {
+    var dict = I18N[lang] || I18N.es;
+    Object.keys(dict).forEach(function (id) {
+      if (id === 'countdown-prefix') {
+        window.__countdownPrefix = dict[id];
+        return;
+      }
+      var el = document.getElementById(id);
+      if (el) el.innerHTML = dict[id];
+    });
+    document.documentElement.lang = lang;
+    document.querySelectorAll('.lang-btn').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    localStorage.setItem('lang', lang);
+  }
+
+  function detectLang() {
+    var saved = localStorage.getItem('lang');
+    if (saved && I18N[saved]) return saved;
+    var nav = (navigator.language || 'es').toLowerCase();
+    if (nav.indexOf('en') === 0) return 'en';
+    if (nav.indexOf('pt') === 0) return 'pt';
+    return 'es';
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () { applyLang(btn.dataset.lang); });
+  });
+
+  applyLang(detectLang());
 })();
 </script>
 
