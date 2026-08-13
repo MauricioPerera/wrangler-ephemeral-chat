@@ -12,7 +12,7 @@ Construido sobre [Durable Objects](https://developers.cloudflare.com/durable-obj
 
 Hermano de [wrangler-ephemeral-whiteboard](https://github.com/MauricioPerera/wrangler-ephemeral-whiteboard) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-whiteboard/)) — mismo patrón, pero para dibujar en vez de chatear — y de [wrangler-ephemeral-airdrop](https://github.com/MauricioPerera/wrangler-ephemeral-airdrop) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-airdrop/)) — para compartir un archivo por QR/link sin que el receptor esté conectado antes — y de [wrangler-ephemeral-sandbox](https://github.com/MauricioPerera/wrangler-ephemeral-sandbox) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-sandbox/)) — para que un agente ejecute JavaScript vía HTTP en un intérprete aislado.
 
-¿Querés chat + pizarra + airdrop juntos, en un solo deploy? Mirá [wrangler-ephemeral-suite](https://github.com/MauricioPerera/wrangler-ephemeral-suite).
+¿Querés chat + pizarra + airdrop juntos, en un solo deploy? Mirá [wrangler-ephemeral-suite](https://github.com/MauricioPerera/wrangler-ephemeral-suite) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-suite/)).
 
 ## Cómo funciona
 
