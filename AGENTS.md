@@ -2,6 +2,8 @@
 
 Este documento es para un agente de IA (Claude Code, Cursor, etc.) que necesite desplegar este proyecto de forma autónoma, sin login humano, usando cuentas temporales de Cloudflare. Está escrito a partir de comportamiento real observado, no solo de la documentación oficial.
 
+Si lo que el usuario necesita no es un chat sino inspeccionar webhooks entrantes, usá el repo hermano [wrangler-ephemeral-webhook](https://github.com/MauricioPerera/wrangler-ephemeral-webhook/blob/master/AGENTS.md) — mismo mecanismo de `--temporary`, pero para capturar y ver requests en vivo.
+
 ## Requisitos previos
 
 - Node.js instalado.
