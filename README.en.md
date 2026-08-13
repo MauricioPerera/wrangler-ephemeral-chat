@@ -12,6 +12,8 @@ Built on [Durable Objects](https://developers.cloudflare.com/durable-objects/) (
 
 Sibling of [wrangler-ephemeral-whiteboard](https://github.com/MauricioPerera/wrangler-ephemeral-whiteboard) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-whiteboard/)) — same pattern, but for drawing instead of chatting — and [wrangler-ephemeral-airdrop](https://github.com/MauricioPerera/wrangler-ephemeral-airdrop) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-airdrop/)) — for sharing a file via QR/link without the receiver having been connected beforehand.
 
+Also a sibling of [wrangler-ephemeral-webhook](https://github.com/MauricioPerera/wrangler-ephemeral-webhook) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-webhook/)) — for inspecting incoming webhooks live.
+
 ## How it works
 
 - `wrangler deploy --temporary` creates a temporary Cloudflare account (no login), deploys the Worker, and gives you a public URL on `workers.dev`.
