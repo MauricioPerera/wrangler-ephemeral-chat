@@ -12,7 +12,7 @@ Construído sobre [Durable Objects](https://developers.cloudflare.com/durable-ob
 
 Irmão de [wrangler-ephemeral-whiteboard](https://github.com/MauricioPerera/wrangler-ephemeral-whiteboard) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-whiteboard/)) — mesmo padrão, mas para desenhar em vez de conversar — e [wrangler-ephemeral-airdrop](https://github.com/MauricioPerera/wrangler-ephemeral-airdrop) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-airdrop/)) — para compartilhar um arquivo via QR/link sem que quem recebe tenha estado conectado antes.
 
-Também é irmão de [wrangler-ephemeral-webhook](https://github.com/MauricioPerera/wrangler-ephemeral-webhook) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-webhook/)) — para inspecionar webhooks recebidos ao vivo.
+Também é irmão de [wrangler-ephemeral-webhook](https://github.com/MauricioPerera/wrangler-ephemeral-webhook) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-webhook/)) — para inspecionar webhooks recebidos ao vivo — e de [wrangler-ephemeral-voicememo](https://github.com/MauricioPerera/wrangler-ephemeral-voicememo) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-voicememo/)) — para gravar e compartilhar um memo de voz.
 
 ## Como funciona
 

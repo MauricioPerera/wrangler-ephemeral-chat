@@ -14,7 +14,7 @@ Hermano de [wrangler-ephemeral-whiteboard](https://github.com/MauricioPerera/wra
 
 ¿Querés chat + pizarra + airdrop juntos, en un solo deploy? Mirá [wrangler-ephemeral-suite](https://github.com/MauricioPerera/wrangler-ephemeral-suite) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-suite/)).
 
-También es hermano de [wrangler-ephemeral-webhook](https://github.com/MauricioPerera/wrangler-ephemeral-webhook) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-webhook/)) — para inspeccionar webhooks entrantes en vivo.
+También es hermano de [wrangler-ephemeral-webhook](https://github.com/MauricioPerera/wrangler-ephemeral-webhook) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-webhook/)) — para inspeccionar webhooks entrantes en vivo — y de [wrangler-ephemeral-voicememo](https://github.com/MauricioPerera/wrangler-ephemeral-voicememo) ([landing page](https://mauricioperera.github.io/wrangler-ephemeral-voicememo/)) — para grabar y compartir un memo de voz.
 
 ## Cómo funciona
 
